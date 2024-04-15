@@ -1,0 +1,42 @@
+import click
+from pathlib import Path
+from .constants import TODAY
+from datetime import date
+from dateutil.relativedelta import relativedelta
+from . import __version__
+
+
+@click.group()
+@click.version_option(__version__)
+@click.help_option("-h", "--help")
+def main() -> None:
+    pass
+
+
+@main.command()
+@click.option("--output", default="data/cruises", type=Path)
+@click.option("--year", default=TODAY.year, type=int)
+@click.option("--month", default=TODAY.month, type=str)
+@click.version_option(__version__)
+@click.help_option("-h", "--help")
+def cruises(output: Path, year: int, month: str) -> None:
+    from .cruises import write_schedule
+
+    if ".." in month:
+        # 0..2 -> current, next, following
+        start, stop = month.split("..")
+        for increment in range(int(start), int(stop) + 1):
+            today = date(year, TODAY.month, 1) + relativedelta(months=increment)
+            write_schedule(today.year, today.month, output)
+    elif month.startswith(("+", "-")):
+        # +1 -> next
+        # -1 -> prior
+        today = date(year, TODAY.month, 1) + relativedelta(months=int(month))
+        write_schedule(today.year, today.month, output)
+    else:
+        # 1 -> January
+        write_schedule(year, int(month), output)
+
+
+if __name__ == "__main__":
+    main()
