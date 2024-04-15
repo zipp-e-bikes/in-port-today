@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cruise Ship Schedule</title>
+</head>
+
+<body>
+
+    <h2>Cruise Ship Schedule</h2>
+
+    <style>
+        table#cruise-schedule {
+            width: 100%;
+            border: 5px solid black;
+            line-height: normal;
+            border-collapse: separate;
+            /* Add this line to prevent double borders */
+            border-radius: 20px;
+            /* Add rounded corners */
+            overflow: hidden;
+            /* Ensure rounded corners are applied */
+            font-size: min(5vw, var(--normal-text-size)) !important;
+        }
+
+        table#cruise-schedule th,
+        table#cruise-schedule td:first-child {
+            background-color: var(--section-inset-border-color);
+            /* #F6F1EA; */
+            font-weight: bold;
+        }
+
+        table#cruise-schedule td:first-child,
+        table#cruise-schedule td:second-child {
+            width: 1%;
+            /* Fit to content */
+        }
+
+        table#cruise-schedule th,
+        table#cruise-schedule td {
+            text-align: center;
+            white-space: nowrap;
+            /* Prevent line wrapping */
+            padding: 8px;
+        }
+
+        table#cruise-schedule tr.cruise-schedule-header {
+            background: #6884FA;
+            font-weight: bold;
+        }
+    </style>
+
+    <table id="cruise-schedule">
+        <tr>
+            <th>Line</th>
+            <th>Ship</th>
+            <th>Arrival</th>
+            <th>Departure</th>
+        </tr>
+        <tr id="yesterday" class="cruise-schedule-header">
+            <td></td>
+            <td>Yesterday (<span class="date"></span>)</td>
+            <td id="yesterdayWeather" colspan="2"></td>
+        </tr>
+        <tr id="today" class="cruise-schedule-header">
+            <td></td>
+            <td>Today (<span class="date"></span>)</td>
+            <td id="todayWeather" colspan="2"></td>
+        </tr>
+        <tr id="tomorrow" class="cruise-schedule-header">
+            <td></td>
+            <td>Tomorrow (<span class="date"></span>)</td>
+            <td id="tomorrowWeather" colspan="2"></td>
+        </tr>
+        <tr id="tomorrow2" class="cruise-schedule-header">
+            <td></td>
+            <td><span class="weekday"></span> (<span class="date"></span>)</td>
+            <td id="tomorrow2Weather" colspan="2"></td>
+        </tr>
+        <tr id="tomorrow3" class="cruise-schedule-header">
+            <td></td>
+            <td><span class="weekday"></span> (<span class="date"></span>)</td>
+            <td id="tomorrow3Weather" colspan="2"></td>
+        </tr>
+        <tr id="tomorrow4" class="cruise-schedule-header">
+            <td></td>
+            <td><span class="weekday"></span> (<span class="date"></span>)</td>
+            <td id="tomorrow4Weather" colspan="2"></td>
+        </tr>
+    </table>
+
+    <script>
+        const CRUISEURL = "https://raw.githubusercontent.com/zipp-e-bikes/in-port-today/main/data/cruises/";
+        const WEATHERURL = "https://raw.githubusercontent.com/zipp-e-bikes/in-port-today/main/data/weather/";
+        const ICONURL = "https://openweathermap.org/img/wn/"
+
+        const TODAY = new Date();
+
+        const YESTERDAY = new Date(TODAY);
+        YESTERDAY.setDate(TODAY.getDate() - 1);
+        const TOMORROW = new Date(TODAY);
+        TOMORROW.setDate(TODAY.getDate() + 1);
+        const TOMORROW2 = new Date(TODAY);
+        TOMORROW2.setDate(TODAY.getDate() + 2);
+        const TOMORROW3 = new Date(TODAY);
+        TOMORROW3.setDate(TODAY.getDate() + 3);
+        const TOMORROW4 = new Date(TODAY);
+        TOMORROW4.setDate(TODAY.getDate() + 4);
+
+        const LOOKUPS = {};
+
+        function pushDate(date, id) {
+            const key = `${formatMonth(date)}.json`;
+            if (!LOOKUPS[key]) {
+                LOOKUPS[key] = []
+            }
+            LOOKUPS[key].push([formatDate(date), formatWeekday(date), id]);
+        }
+        function formatMonth(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            return `${year}-${month}`;
+        }
+
+        pushDate(YESTERDAY, "yesterday");
+        pushDate(TODAY, "today");
+        pushDate(TOMORROW, "tomorrow");
+        pushDate(TOMORROW2, "tomorrow2");
+        pushDate(TOMORROW3, "tomorrow3");
+        pushDate(TOMORROW4, "tomorrow4");
+
+        const DEFAULTCRUISE = [{ "line": "-", "ship": "-", "arrival": "-", "departure": "-" }];
+        const CRUISELINEALIASES = {
+            "Royal Caribbean Cruises": "Royal",
+            "Disney Cruise Line Cruises": "Disney",
+            "Carnival Cruise Line Cruises": "Carnival",
+        };
+
+        const DEFAULTWEATHER = { "low": [], "high": [], "conditions": [], "icons": [] };
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const SCHEDULE = document.getElementById("cruise-schedule");
+
+            console.log(LOOKUPS);
+
+            Object.keys(LOOKUPS).forEach(key => {
+                fetch(`${CRUISEURL}/${key}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        LOOKUPS[key].forEach(([date, weekday, id]) => {
+                            const header = document.getElementById(id);
+                            header.querySelector("span.date").innerHTML = date;
+                            headerWeekday = header.querySelector("span.weekday");
+                            if (headerWeekday) {
+                                headerWeekday.innerHTML = weekday;
+                            }
+
+                            (data[date] || DEFAULTCRUISE).forEach((entry, i) => {
+                                const row = SCHEDULE.insertRow(header.rowIndex + i + 1)
+                                const cellCruise = row.insertCell(0);
+                                const cellShip = row.insertCell(1);
+                                const cellArrival = row.insertCell(2);
+                                const cellDeparture = row.insertCell(3);
+
+                                cellCruise.innerHTML = CRUISELINEALIASES[entry.line] || entry.line;
+                                cellShip.innerHTML = entry.ship;
+                                cellArrival.innerHTML = entry.arrival;
+                                cellDeparture.innerHTML = entry.departure;
+                            });
+                        });
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+                fetch(`${WEATHERURL}/${key}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        LOOKUPS[key].forEach(([date, _, id]) => {
+                            const cellWeather = document.getElementById(`${id}Weather`);
+
+                            const weather = data[date] || DEFAULTWEATHER;
+
+                            weather["icons"].forEach(icons => {
+                                (icons || []).forEach(icon => {
+                                    const image = document.createElement('img');
+                                    image.src = `${ICONURL}/${icon}.png`;
+                                    // image.alt = 'Image';
+                                    // image.width = 200; // Example width
+
+                                    cellWeather.appendChild(image);
+                                });
+                            });
+                        })
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            });
+        });
+
+        function formatDate(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${formatMonth(date)}-${day}`;
+        }
+        function formatWeekday(date) {
+            return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][date.getDay()];
+        }
+    </script>
+
+</body>
+
+</html>
