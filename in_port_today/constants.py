@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from datetime import date
 from random import choice
 
@@ -19,3 +20,5 @@ USERAGENT = choice(
         "Mozilla/5.0 (X11; Linux i686; rv:124.0) Gecko/20100101 Firefox/124.0",
     )
 )
+WEATHERAPIKEY = os.getenv("WEATHERAPIKEY")
+WEATHERURL = f"https://api.openweathermap.org/data/2.5/forecast?lat=29.30135&lon=-94.7977&units=imperial&appid={WEATHERAPIKEY}"

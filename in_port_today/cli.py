@@ -38,5 +38,15 @@ def cruises(output: Path, year: int, month: str) -> None:
         write_schedule(year, int(month), output)
 
 
+@main.command()
+@click.option("--output", default="data/weather", type=Path)
+@click.version_option(__version__)
+@click.help_option("-h", "--help")
+def weather(output: Path) -> None:
+    from .weather import write_weather
+
+    write_weather(TODAY.year, TODAY.month, output)
+
+
 if __name__ == "__main__":
     main()
