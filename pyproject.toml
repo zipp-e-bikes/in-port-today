@@ -78,5 +78,6 @@ target-version = "py312"
 # RUF = Ruff-specific rules
 # see also https://docs.astral.sh/ruff/rules/
 select = ["E", "W", "F", "C90", "I", "N", "UP", "YTT", "ANN", "S", "BLE", "B", "A", "C4", "T10", "FA", "ISC", "ICN", "LOG", "G", "PIE", "Q", "RSE", "RET", "SLF", "SLOT", "SIM", "TCH", "ARG", "PTH", "ERA", "PL", "RUF"]
-ignore = []
+# ANN401 = dynamically typed expressions are disallowed
+ignore = ["ANN401"]
 flake8-type-checking = {exempt-modules = [], strict = true}

@@ -1,9 +1,11 @@
-import click
-from pathlib import Path
-from .constants import TODAY
 from datetime import date
+from pathlib import Path
+
+import click
 from dateutil.relativedelta import relativedelta
+
 from . import __version__
+from .constants import TODAY
 
 
 @click.group()

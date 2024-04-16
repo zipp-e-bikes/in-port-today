@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date, datetime
+from datetime import datetime
 from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
@@ -10,6 +10,7 @@ from .constants import WEATHERURL
 from .exceptions import WeatherError
 
 if TYPE_CHECKING:
+    from datetime import date
     from pathlib import Path
     from typing import Literal, TypedDict
 
@@ -63,10 +64,10 @@ if TYPE_CHECKING:
 def get_weather() -> dict[date, Weather]:
     print(f"Fetching weather from {WEATHERURL}")
 
-    response = requests.get(WEATHERURL)
+    response = requests.get(WEATHERURL, timeout=10)
 
     # check if the response was successful
-    if response.status_code != 200:
+    if response.status_code != requests.codes.ok:
         raise WeatherError(f"Failed to retrieve the json: {WEATHERURL}")
 
     data = response.json()
@@ -122,5 +123,5 @@ def write_weather(year: int, month: int, output: Path) -> None:
         # FileNotFoundError: path doesn't exist yet
         weather = {}
 
-    path.write_text(json.dumps({**weather, **get_weather()}))
+    path.write_text(json.dumps({**weather, **get_weather()}) + "\n")
     print(f"Wrote weather to {path}")

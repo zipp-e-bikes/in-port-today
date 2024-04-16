@@ -1,16 +1,21 @@
 from __future__ import annotations
 
+from datetime import datetime, time
+from typing import TYPE_CHECKING
+from warnings import warn
+
 import requests
 from bs4 import BeautifulSoup
-from datetime import date, time, datetime
-from warnings import warn
-from typing import TYPE_CHECKING
+
+from .constants import CRUISEURL, USERAGENT
 from .exceptions import CruiseScheduleError
-from .constants import USERAGENT, CRUISEURL
 
 if TYPE_CHECKING:
-    from typing import TypedDict
+    from datetime import date
     from pathlib import Path
+    from typing import TypedDict
+
+    from bs4 import element
 
     class Ship(TypedDict):
         line: str
@@ -34,10 +39,10 @@ def get_schedule(year_month: str) -> Schedule:
 
     print(f"Fetching cruise schedule from {url}")
 
-    response = requests.get(url, headers={"User-Agent": USERAGENT})
+    response = requests.get(url, headers={"User-Agent": USERAGENT}, timeout=10)
 
     # Check if the request was successful
-    if response.status_code != 200:
+    if response.status_code != requests.codes.ok:
         raise CruiseScheduleError(f"Failed to retrieve the webpage: {url}")
 
     soup = BeautifulSoup(response.text, "html.parser")
@@ -46,7 +51,7 @@ def get_schedule(year_month: str) -> Schedule:
         raise CruiseScheduleError(
             f"Failed to find schedule (table) within webpage: {url}"
         )
-    elif len(dom) != 1:
+    if len(dom) != 1:
         raise CruiseScheduleError(f"Got multiple schedules within webpage: {url}")
 
     if not (dom := dom[0].select("tbody")):
@@ -55,22 +60,34 @@ def get_schedule(year_month: str) -> Schedule:
         )
     table = dom[0]
 
+    return _parse_schedule(table)
+
+
+# <tr><td>DATE</td><td>SHIP</td><td>ARRIVAL</td><td>DEPARTURE</td></tr>
+_NUM_TABLE_ROW_CELLS = 4
+# <td><span>DATE</span><span>WEEKDAY</span></td>
+_NUM_DATE_CELL_SPANS = 2
+# <td><img><a></td>
+_NUM_SHIP_CELL_IMGS = 1
+
+
+def _parse_schedule(table: element.Tag) -> Schedule:
     schedule: Schedule = {}
     rows = table.select("tr")
     for row in rows:
         cells = row.select("td")
 
-        if len(cells) != 4:
-            warn(f"Unexpected number ({len(cells)}) of cells, skipping")
+        if len(cells) != _NUM_TABLE_ROW_CELLS:
+            warn(f"Unexpected number ({len(cells)}) of cells, skipping", stacklevel=1)
             continue
 
-        if len(dom := cells[0].select("span")) != 2:
-            warn(f"Unexpected date format ({cells[0]}), skipping")
+        if len(dom := cells[0].select("span")) != _NUM_DATE_CELL_SPANS:
+            warn(f"Unexpected date format ({cells[0]}), skipping", stacklevel=1)
             continue
         date = parse_date(dom[0].text)
 
-        if len(dom := cells[1].select("img")) != 1:
-            warn(f"Unexpected cruise line format ({cells[1]}), skipping")
+        if len(dom := cells[1].select("img")) != _NUM_SHIP_CELL_IMGS:
+            warn(f"Unexpected cruise line format ({cells[1]}), skipping", stacklevel=1)
             continue
         line = dom[0].attrs["title"].removesuffix(" cruise line")
 
@@ -105,5 +122,5 @@ def write_schedule(year: int, month: int, output: Path) -> None:
     path = output / f"{year_month}.json"
 
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(get_schedule(year_month)))
+    path.write_text(json.dumps(get_schedule(year_month)) + "\n")
     print(f"Wrote cruise schedule to {path}")
