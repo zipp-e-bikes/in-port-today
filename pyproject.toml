@@ -39,3 +39,44 @@ include = ["zipp_e_bikes"]
 
 [tool.hatch.build.hooks.vcs]
 version-file = "zipp_e_bikes/_version.py"
+
+[tool.ruff]
+target-version = "py312"
+
+[tool.ruff.lint]
+# E, W = pycodestyle errors and warnings
+# F = pyflakes
+# C90 = mccabe
+# I = isort
+# N = pep8-naming
+# UP = pyupgrade
+# YTT = flake8-2020
+# ANN = flake8-annotations
+# S = flake8-bandit
+# BLE = flake8-blind-except
+# B = flake8-bugbear
+# A = flake8-builtins
+# C4 = flake8-comprehensions
+# T10 = flake8-debugger
+# FA = flake8-future-annotations
+# ISC = flake8-implicit-str-concat
+# ICN = flake8-import-conventions
+# LOG = flake8-logging
+# G = flake8-logging-format
+# PIE = flake8-pie
+# Q = flake8-quotes
+# RSE = flake8-raise
+# RET = flake8-return
+# SLF = flake8-self
+# SLOT = flake8-slots
+# SIM = flake8-simplify
+# TCH = flake8-type-checking
+# ARG = flake8-unused-arguments
+# PTH = flake8-use-pathlib
+# ERA = eradicate
+# PL = Pylint
+# RUF = Ruff-specific rules
+# see also https://docs.astral.sh/ruff/rules/
+select = ["E", "W", "F", "C90", "I", "N", "UP", "YTT", "ANN", "S", "BLE", "B", "A", "C4", "T10", "FA", "ISC", "ICN", "LOG", "G", "PIE", "Q", "RSE", "RET", "SLF", "SLOT", "SIM", "TCH", "ARG", "PTH", "ERA", "PL", "RUF"]
+ignore = []
+flake8-type-checking = {exempt-modules = [], strict = true}

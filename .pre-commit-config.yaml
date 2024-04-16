@@ -1,3 +1,4 @@
+---
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
@@ -15,6 +16,22 @@ repos:
             tests/requirements.txt
           )
         args: [--unique]
+  - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+    rev: 0.2.3
+    hooks:
+      - id: yamlfmt
+        args: [--mapping, '2', --offset, '2', --sequence, '4', --width, '1000000']
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.28.1
+    hooks:
+      - id: check-github-workflows
+      - id: check-dependabot
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.6
+    hooks:
+      # see setup.cfg
+      - id: codespell
+        args: [--write-changes]
   - repo: https://github.com/adamchainz/blacken-docs
     rev: 1.16.0
     hooks:
@@ -22,6 +39,7 @@ repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.3.4
     hooks:
+      # see pyproject.toml
       - id: ruff
         args: [--fix]
       - id: ruff-format
