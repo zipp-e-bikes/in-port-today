@@ -1,0 +1,206 @@
+{
+    "2024-04-01": [
+        {
+            "line": "Royal Caribbean Cruises",
+            "ship": "Voyager Of The Seas",
+            "arrival": "07:00",
+            "departure": "16:00"
+        }
+    ],
+    "2024-04-04": [
+        {
+            "line": "Disney Cruise Line Cruises",
+            "ship": "Disney Magic",
+            "arrival": "08:00",
+            "departure": "15:00"
+        },
+        {
+            "line": "Carnival Cruise Line Cruises",
+            "ship": "Carnival Breeze",
+            "arrival": "08:00",
+            "departure": "15:00"
+        }
+    ],
+    "2024-04-05": [
+        {
+            "line": "Norwegian Cruise Line Cruises",
+            "ship": "Norwegian Prima",
+            "arrival": "07:00",
+            "departure": "16:00"
+        }
+    ],
+    "2024-04-06": [
+        {
+            "line": "Royal Caribbean Cruises",
+            "ship": "Voyager Of The Seas",
+            "arrival": "07:00",
+            "departure": "16:00"
+        },
+        {
+            "line": "Carnival Cruise Line Cruises",
+            "ship": "Carnival Jubilee",
+            "arrival": "08:00",
+            "departure": "16:00"
+        },
+        {
+            "line": "Carnival Cruise Line Cruises",
+            "ship": "Carnival Dream",
+            "arrival": "08:00",
+            "departure": "15:00"
+        }
+    ],
+    "2024-04-07": [
+        {
+            "line": "Royal Caribbean Cruises",
+            "ship": "Harmony Of The Seas",
+            "arrival": "07:00",
+            "departure": "16:00"
+        }
+    ],
+    "2024-04-08": [
+        {
+            "line": "Carnival Cruise Line Cruises",
+            "ship": "Carnival Breeze",
+            "arrival": "08:00",
+            "departure": "15:00"
+        }
+    ],
+    "2024-04-09": [
+        {
+            "line": "Disney Cruise Line Cruises",
+            "ship": "Disney Magic",
+            "arrival": "08:00",
+            "departure": "15:00"
+        }
+    ],
+    "2024-04-11": [
+        {
+            "line": "Royal Caribbean Cruises",
+            "ship": "Voyager Of The Seas",
+            "arrival": "07:00",
+            "departure": "16:00"
+        }
+    ],
+    "2024-04-13": [
+        {
+            "line": "Carnival Cruise Line Cruises",
+            "ship": "Carnival Jubilee",
+            "arrival": "08:00",
+            "departure": "16:00"
+        },
+        {
+            "line": "Carnival Cruise Line Cruises",
+            "ship": "Carnival Breeze",
+            "arrival": "08:00",
+            "departure": "15:00"
+        }
+    ],
+    "2024-04-14": [
+        {
+            "line": "Royal Caribbean Cruises",
+            "ship": "Harmony Of The Seas",
+            "arrival": "07:00",
+            "departure": "16:00"
+        },
+        {
+            "line": "Disney Cruise Line Cruises",
+            "ship": "Disney Magic",
+            "arrival": "08:00",
+            "departure": "15:00"
+        },
+        {
+            "line": "Carnival Cruise Line Cruises",
+            "ship": "Carnival Dream",
+            "arrival": "08:00",
+            "departure": "15:00"
+        }
+    ],
+    "2024-04-15": [
+        {
+            "line": "Royal Caribbean Cruises",
+            "ship": "Voyager Of The Seas",
+            "arrival": "07:00",
+            "departure": "16:00"
+        }
+    ],
+    "2024-04-18": [
+        {
+            "line": "Carnival Cruise Line Cruises",
+            "ship": "Carnival Breeze",
+            "arrival": "08:00",
+            "departure": "15:00"
+        }
+    ],
+    "2024-04-20": [
+        {
+            "line": "Royal Caribbean Cruises",
+            "ship": "Voyager Of The Seas",
+            "arrival": "07:00",
+            "departure": "16:00"
+        },
+        {
+            "line": "Carnival Cruise Line Cruises",
+            "ship": "Carnival Jubilee",
+            "arrival": "08:00",
+            "departure": "16:00"
+        },
+        {
+            "line": "Carnival Cruise Line Cruises",
+            "ship": "Carnival Dream",
+            "arrival": "08:00",
+            "departure": "15:00"
+        }
+    ],
+    "2024-04-21": [
+        {
+            "line": "Royal Caribbean Cruises",
+            "ship": "Harmony Of The Seas",
+            "arrival": "07:00",
+            "departure": "16:00"
+        }
+    ],
+    "2024-04-22": [
+        {
+            "line": "Carnival Cruise Line Cruises",
+            "ship": "Carnival Breeze",
+            "arrival": "08:00",
+            "departure": "15:00"
+        }
+    ],
+    "2024-04-25": [
+        {
+            "line": "Royal Caribbean Cruises",
+            "ship": "Voyager Of The Seas",
+            "arrival": "07:00",
+            "departure": "16:00"
+        }
+    ],
+    "2024-04-27": [
+        {
+            "line": "Carnival Cruise Line Cruises",
+            "ship": "Carnival Jubilee",
+            "arrival": "08:00",
+            "departure": "16:00"
+        },
+        {
+            "line": "Carnival Cruise Line Cruises",
+            "ship": "Carnival Breeze",
+            "arrival": "08:00",
+            "departure": "15:00"
+        }
+    ],
+    "2024-04-28": [
+        {
+            "line": "Royal Caribbean Cruises",
+            "ship": "Harmony Of The Seas",
+            "arrival": "07:00",
+            "departure": "16:00"
+        },
+        {
+            "line": "Carnival Cruise Line Cruises",
+            "ship": "Carnival Dream",
+            "arrival": "08:00",
+            "departure": "15:00"
+        }
+    ]
+}
