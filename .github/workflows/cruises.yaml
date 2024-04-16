@@ -1,0 +1,52 @@
+---
+name: Cruises
+
+on:
+  workflow_dispatch:
+  schedule:
+    # https://crontab.guru/#37_8_*_*_3
+    # weekly on Wednesday at 8:37 AM UTC
+    - cron: 37 8 * * 3
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
+        with:
+          python-version: 3.12
+
+      - name: install dependencies
+        run: pip install -r requirements.txt
+
+      - name: fetch cruises
+        run: python -m in_port_today.cli cruises --month 0..1
+
+      - uses: peter-evans/create-pull-request@c55203cfde3e5c11a452d352b4393e68b85b4533
+        id: cpr
+        with:
+          commit-message: 🤖 Update cruise schedule
+          committer: zipp-e-bikes-bot <166943724+zipp-e-bikes-bot@users.noreply.github.com>
+          author: zipp-e-bikes-bot <166943724+zipp-e-bikes-bot@users.noreply.github.com>
+          branch: cruises
+          delete-branch: true
+          title: 🤖 Update cruise schedule
+          body: Created by ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}.
+          labels: auto
+          assignees: zipp-e-bikes-bot
+          reviewers: zipp-e-bikes-bot
+
+      - name: auto merge pull request
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: gh pr merge --squash --auto ${{ steps.cpr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ github.token }}
