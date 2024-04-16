@@ -1,0 +1,50 @@
+---
+name: Weather
+
+on:
+  workflow_dispatch:
+  schedule:
+    # https://crontab.guru/#37_6_*_*_*
+    # daily at 6:37 AM UTC
+    - cron: 37 6 * * *
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Fetch weather
+        run: python -m in_port_today.cli weather
+        env:
+          WEATHERAPIKEY: ${{ secrets.WEATHERAPIKEY }}
+
+      - uses: peter-evans/create-pull-request@c55203cfde3e5c11a452d352b4393e68b85b4533
+        id: cpr
+        with:
+          commit-message: 🤖 Update weather
+          branch: cruises
+          delete-branch: true
+          title: 🤖 Update weather
+          body: Created by ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}.
+          labels: auto
+
+      - name: Auto merge pull request
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: gh pr merge --squash --auto ${{ steps.cpr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ github.token }}
