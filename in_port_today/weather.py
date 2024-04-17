@@ -10,7 +10,6 @@ from .constants import WEATHERURL
 from .exceptions import WeatherError
 
 if TYPE_CHECKING:
-    from datetime import date
     from pathlib import Path
     from typing import Literal, TypedDict
 
@@ -61,7 +60,7 @@ if TYPE_CHECKING:
         icons: list[list[WeatherIcons] | None]
 
 
-def get_weather() -> dict[date, Weather]:
+def get_weather() -> dict[str, Weather]:
     print(f"Fetching weather from {WEATHERURL}")
 
     response = requests.get(WEATHERURL, timeout=10)
@@ -78,12 +77,12 @@ def get_weather() -> dict[date, Weather]:
     utc = ZoneInfo("UTC")
     cst = ZoneInfo("America/Chicago")
 
-    calendar: dict[date, Weather] = {}
+    calendar: dict[str, Weather] = {}
     for snapshot in snapshots:
         weatherstamp = datetime.fromtimestamp(snapshot["dt"])  # timestamp in UTC
         utcstamp = weatherstamp.replace(tzinfo=utc)
         cststamp = utcstamp.astimezone(cst)
-        date = cststamp.date()
+        date = cststamp.date().isoformat()
 
         index = int(cststamp.hour / 3)
 
@@ -109,6 +108,28 @@ def get_weather() -> dict[date, Weather]:
     return calendar
 
 
+def deepupdate(
+    original: dict[str, Weather],
+    update: dict[str, Weather],
+) -> dict[str, Weather]:
+    for date, weather in update.items():
+        if date not in original:
+            original[date] = weather
+            continue
+
+        for key, value in weather.items():
+            original[date][key] = [
+                update_value or original_value
+                for update_value, original_value in zip(
+                    value,
+                    original[date][key],
+                    strict=True,
+                )
+            ]
+
+    return original
+
+
 def write_weather(year: int, month: int, output: Path) -> None:
     from . import json
 
@@ -123,5 +144,5 @@ def write_weather(year: int, month: int, output: Path) -> None:
         # FileNotFoundError: path doesn't exist yet
         weather = {}
 
-    path.write_text(json.dumps({**weather, **get_weather()}) + "\n")
+    path.write_text(json.dumps(deepupdate(weather, get_weather())) + "\n")
     print(f"Wrote weather to {path}")
