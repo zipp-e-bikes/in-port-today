@@ -60,7 +60,7 @@ if TYPE_CHECKING:
         icons: list[list[WeatherIcons] | None]
 
 
-def get_weather() -> dict[str, Weather]:
+def get_weather() -> dict[str, dict[str, Weather]]:
     print(f"Fetching weather from {WEATHERURL}")
 
     response = requests.get(WEATHERURL, timeout=10)
@@ -77,7 +77,7 @@ def get_weather() -> dict[str, Weather]:
     utc = ZoneInfo("UTC")
     cst = ZoneInfo("America/Chicago")
 
-    calendar: dict[str, Weather] = {}
+    calendar: dict[str, dict[str, Weather]] = {}
     for snapshot in snapshots:
         weatherstamp = datetime.fromtimestamp(snapshot["dt"])  # timestamp in UTC
         utcstamp = weatherstamp.replace(tzinfo=utc)
@@ -87,6 +87,9 @@ def get_weather() -> dict[str, Weather]:
         index = int(cststamp.hour / 3)
 
         weather = calendar.setdefault(
+            cststamp.date().isoformat()[:7],
+            {},
+        ).setdefault(
             date,
             {
                 "low": [None] * 8,
@@ -130,19 +133,19 @@ def deepupdate(
     return original
 
 
-def write_weather(year: int, month: int, output: Path) -> None:
+def write_weather(output: Path) -> None:
     from . import json
 
-    year_month = f"{year}-{month:02}"
-    path = output / f"{year_month}.json"
+    for year_month, new_weather in get_weather().items():
+        path = output / f"{year_month}.json"
 
-    path.parent.mkdir(parents=True, exist_ok=True)
+        path.parent.mkdir(parents=True, exist_ok=True)
 
-    try:
-        weather = json.loads(path.read_text())
-    except FileNotFoundError:
-        # FileNotFoundError: path doesn't exist yet
-        weather = {}
+        try:
+            weather = json.loads(path.read_text())
+        except FileNotFoundError:
+            # FileNotFoundError: path doesn't exist yet
+            weather = {}
 
-    path.write_text(json.dumps(deepupdate(weather, get_weather())) + "\n")
-    print(f"Wrote weather to {path}")
+        path.write_text(json.dumps(deepupdate(weather, new_weather)) + "\n")
+        print(f"Wrote weather to {path}")
