@@ -47,7 +47,7 @@ def cruises(output: Path, year: int, month: str) -> None:
 def weather(output: Path) -> None:
     from .weather import write_weather
 
-    write_weather(TODAY.year, TODAY.month, output)
+    write_weather(output)
 
 
 if __name__ == "__main__":
