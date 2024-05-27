@@ -1,0 +1,48 @@
+{
+    "2024-06-01": {
+        "low": [
+            81.45,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ],
+        "high": [
+            81.45,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ],
+        "conditions": [
+            [
+                "Clouds"
+            ],
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ],
+        "icons": [
+            [
+                "02n"
+            ],
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ]
+    }
+}
