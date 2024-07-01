@@ -22,22 +22,22 @@ repos:
       - id: yamlfmt
         args: [--mapping, '2', --offset, '2', --sequence, '4', --width, '1000000']
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.28.2
+    rev: 0.28.6
     hooks:
       - id: check-github-workflows
       - id: check-dependabot
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.6
+    rev: v2.3.0
     hooks:
       # see setup.cfg
       - id: codespell
         args: [--write-changes]
   - repo: https://github.com/adamchainz/blacken-docs
-    rev: 1.16.0
+    rev: 1.18.0
     hooks:
       - id: blacken-docs
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.3
+    rev: v0.5.0
     hooks:
       # see pyproject.toml
       - id: ruff
